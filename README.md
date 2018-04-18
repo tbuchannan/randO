@@ -1,6 +1,6 @@
 ## Front End Project
 
-Please make a single*page web app that shows infographics about a set of people based on JSON data from Random User Generator (https://randomuser.me/).
+Please make a single page web app that shows infographics about a set of people based on JSON data from Random User Generator (https://randomuser.me/).
 
 On the initial page load, the user should see a form that allows them to either paste the JSON into a text input field or upload it as a file.
 

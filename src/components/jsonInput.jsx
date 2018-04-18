@@ -12,25 +12,32 @@ class JSONInput extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.parseJSON = this.parseJSON.bind(this);
+    this.getAge = this.getAge.bind(this);
   }
 
+  // TODO: Use momentJS instead of some rinky dink method.
+  getAge(age){
+    let now = new Date().getFullYear();
+
+  }
   parseJSON(arr) {
-    let obj = {};
-    let male = 0;
-    let female = 0;
-    let firstNameAM = 0;
-    let lastNameAM =  0;
-    let firstNameNZ = 0;
-    let lastNameNZ = 0;
-    let states = {};
-    let ageRanges = {
-      "0-20":0,
-      "21-40":0,
-      "41-60":0,
-      "0-20":0,
-      "0-20":0,
-      "0-20":0,
-    };
+    let info = {
+      male: 0,
+      female: 0,
+      firstNameAM: 0,
+      lastNameAM:  0,
+      firstNameNZ: 0,
+      lastNameNZ: 0,
+      states: {},
+      ageRanges: {
+        "0-20": 0,
+        "21-40": 0,
+        "41-60": 0,
+        "61-80": 0,
+        "81-100": 0,
+        "100+": 0,
+      }
+    }
     let total = arr.length;
 
     for (let i = 0; i < arr.length; i++) {
@@ -38,17 +45,38 @@ class JSONInput extends React.Component {
       let firstNameLetter = person.name.first[0].toLowerCase();
       let lastNameLetter = person.name.last[0].toLowerCase();
       let state = person.location.state;
+      let age = getAge(person.dob)
 
-      female += person.gender == "female" ? 1 : 0;
-      male += person.gender == "male" ? 1 : 0;
-      firstNameAM += firstNameLetter >= "a" && firstNameLetter <= "m" ? 1 : 0;
-      firstNameNZ += firstNameLetter >= "n" && firstNameLetter <= "z" ? 1 : 0;
-      lastNameAM += firstNameLetter >= "a" && firstNameLetter <= "m" ? 1 : 0;
-      lastNameNZ += lastNameLetter >= "n" && lastNameLetter <= "z" ? 1 : 0;
-      states[state] = states[state] ? states[state] + 1 : 1;
+      info[female] += person.gender == "female" ? 1 : 0;
+      info[male] += person.gender == "male" ? 1 : 0;
+      info[firstNameAM] += firstNameLetter >= "a" && firstNameLetter <= "m" ? 1 : 0;
+      info[firstNameNZ] += firstNameLetter >= "n" && firstNameLetter <= "z" ? 1 : 0;
+      info[lastNameAM] += firstNameLetter >= "a" && firstNameLetter <= "m" ? 1 : 0;
+      info[lastNameNZ] += lastNameLetter >= "n" && lastNameLetter <= "z" ? 1 : 0;
+      info[states[state]] = info[states[state]] ? info[states[state]] + 1 : 1;
 
+      switch (age) {
+        case age <= 20:
+          info[ageRanges["0-20"]] += 1;
+          break;
+        case age <= 40:
+          info[ageRanges["21-40"]] += 1;
+          break;
+        case age <= 60:
+          info[ageRanges["41-60"]] += 1;
+          break;
+        case age <= 80:
+          info[ageRanges["61-80"]] += 1;
+          break;
+        case age <= 100:
+          info[ageRanges["81-100"]] += 1;
+          break;
+        case age > 100:
+          info[ageRanges["100+"]] += 1;
+          break;
+      }
     }
-
+    return info;
   }
 
   handleChange(e) {
@@ -56,7 +84,7 @@ class JSONInput extends React.Component {
     try {
       let results = JSON.parse(e.target.value).results;
       let info = this.parseJSON(results);
-      this.setState({value: e.target.value, people: results, hasError: false});
+      this.setState({value: e.target.value, info: info, hasError: false});
     } catch (e) {
       this.setState({value: "", hasError: true})
     }
@@ -66,7 +94,7 @@ class JSONInput extends React.Component {
     return(
       <div>
         <textarea rows="30" cols="70" value={this.state.value} placeholder="Paste JSON Info" onChange={this.handleChange}/>
-        <Charts people={this.state.people} />
+        <Charts info={this.state.info} />
       </div>
 
     );

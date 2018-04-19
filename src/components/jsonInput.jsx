@@ -13,6 +13,7 @@ class JSONInput extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handeFileChange = this.handeFileChange.bind(this);
     this.parseJSON = this.parseJSON.bind(this);
     this.getAge = this.getAge.bind(this);
   }
@@ -80,7 +81,18 @@ class JSONInput extends React.Component {
           break;
       }
     }
+
     return info;
+  }
+  // TODO: Finish File parser
+  handeFileChange(e) {
+    let file = e.target.files[0];
+    let reader = new FileReader();
+
+    reader.onload = e => {
+
+    };
+    reader.readAsBinaryString(file);
   }
 
   handleChange(e) {
@@ -98,6 +110,8 @@ class JSONInput extends React.Component {
     return(
       <div>
         <textarea rows="30" cols="70" value={this.state.value} placeholder="Paste JSON Info" onChange={this.handleChange}/>
+        <br/>
+        <input type="file" accept=".json, .xml, .csv, .yaml" onChange={this.handeFileChange}/>
         <Charts info={this.state.info} />
       </div>
     );

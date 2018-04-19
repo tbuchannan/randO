@@ -10,8 +10,7 @@ const Charts = props =>  {
         <MaleFemaleChart male={info.male} female={info.female} />
         <FirstNamesChart firstNameAM={info.firstNameAM} firstNameNZ={info.firstNameNZ} />
         <LastNamesChart lastNameAM={info.lastNameAM} lastNameNZ={info.lastNameNZ} />
-        <div> Total </div>
-        <div>{info.total}</div>
+        <div> Total: {info.total} </div>
       </div>
     );
   }

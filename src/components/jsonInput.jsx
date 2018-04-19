@@ -1,5 +1,6 @@
 import React from 'react';
 import Charts from './charts/charts';
+import moment from 'moment';
 
 class JSONInput extends React.Component {
   constructor(props) {
@@ -17,8 +18,10 @@ class JSONInput extends React.Component {
   }
 
   getAge(age) {
-    let now = new Date().getFullYear();
+    let monthsSinceBirth = Math.floor(moment().diff(moment(age),'months'));
+    return Math.floor(monthsSinceBirth / 12)
   }
+
   parseJSON(arr) {
     let info = {
       male: 0,
@@ -43,35 +46,37 @@ class JSONInput extends React.Component {
       let person = arr[i];
       let firstNameLetter = person.name.first[0].toLowerCase();
       let lastNameLetter = person.name.last[0].toLowerCase();
+      let age = this.getAge(person.dob);
       let state = person.location.state;
-      let age = this.getAge(person.dob)
 
-      info.female += person.gender == "female" ? 1 : 0;
-      info.male += person.gender == "male" ? 1 : 0;
+      info.female += person.gender === "female" ? 1 : 0;
+      info.male += person.gender === "male" ? 1 : 0;
       info.firstNameAM += firstNameLetter >= "a" && firstNameLetter <= "m" ? 1 : 0;
       info.firstNameNZ += firstNameLetter >= "n" && firstNameLetter <= "z" ? 1 : 0;
       info.lastNameAM += firstNameLetter >= "a" && firstNameLetter <= "m" ? 1 : 0;
       info.lastNameNZ += lastNameLetter >= "n" && lastNameLetter <= "z" ? 1 : 0;
-      info.states.state = info.states.state ? info.states.state + 1 : 1;
+      info.states[state] = info.states[state] ? info.states[state] + 1 : 1;
 
-      switch (age) {
-        case age <= 20:
+      switch (true) {
+        case (age <= 20):
           info.ageRanges["0-20"] += 1;
           break;
-        case age <= 40:
+        case (age <= 40):
           info.ageRanges["21-40"] += 1;
           break;
-        case age <= 60:
+        case (age <= 60):
           info.ageRanges["41-60"] += 1;
           break;
-        case age <= 80:
+        case (age <= 80):
           info.ageRanges["61-80"] += 1;
           break;
-        case age <= 100:
+        case (age <= 100):
           info.ageRanges["81-100"] += 1;
           break;
-        case age > 100:
+        case (age > 100):
           info.ageRanges["100+"] += 1;
+          break;
+        default:
           break;
       }
     }
